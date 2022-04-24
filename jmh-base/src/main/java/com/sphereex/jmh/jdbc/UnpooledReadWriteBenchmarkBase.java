@@ -47,7 +47,7 @@ public abstract class UnpooledReadWriteBenchmarkBase implements JDBCConnectionPr
     }
     
     @Benchmark
-    @BenchmarkMode({Mode.Throughput, Mode.AverageTime, Mode.SampleTime})
+    //@BenchmarkMode({Mode.Throughput, Mode.AverageTime, Mode.SampleTime})
     public void oltpReadWrite() throws Exception {
         try {
             for (PreparedStatement each : reads) {
