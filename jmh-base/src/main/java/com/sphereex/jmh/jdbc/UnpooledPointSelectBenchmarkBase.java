@@ -61,7 +61,7 @@ public abstract class UnpooledPointSelectBenchmarkBase implements JDBCConnection
 
     @Benchmark
     public void oltpPointSelect() throws Exception {
-        int tableOrder = ThreadLocalRandom.current().nextInt(BenchmarkParameters.TABLES) + 1;
+        int tableOrder = ThreadLocalRandom.current().nextInt(BenchmarkParameters.TABLES);
         preparedStatements[tableOrder].setInt(1, ThreadLocalRandom.current().nextInt(BenchmarkParameters.TABLE_SIZE));
         preparedStatements[tableOrder].execute();
     }
