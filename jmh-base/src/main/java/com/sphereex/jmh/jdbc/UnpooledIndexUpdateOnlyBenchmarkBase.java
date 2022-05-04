@@ -31,12 +31,7 @@
 
 package com.sphereex.jmh.jdbc;
 
-import org.openjdk.jmh.annotations.Benchmark;
-import org.openjdk.jmh.annotations.Level;
-import org.openjdk.jmh.annotations.Scope;
-import org.openjdk.jmh.annotations.Setup;
-import org.openjdk.jmh.annotations.State;
-import org.openjdk.jmh.annotations.TearDown;
+import org.openjdk.jmh.annotations.*;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -51,14 +46,13 @@ public abstract class UnpooledUpdateOnlyBenchmarkBase implements JDBCConnectionP
     @Setup(Level.Trial)
     public void setup() throws Exception {
         connection = getConnection();
-        updateStatement = connection.prepareStatement("update sbtest1 set k=k+1, c=? where id=? and c = ?;");
+        updateStatement = connection.prepareStatement("update sbtest1 set k=k+1 where id=?;");
     }
     
     @Benchmark
+    @BenchmarkMode({Mode.Throughput, Mode.AverageTime, Mode.SampleTime})
     public void oltpUpdateOnly() throws Exception {
-        updateStatement.setString(1,"test");
-        updateStatement.setInt(2,1);
-        updateStatement.setString(3,"test");
+        updateStatement.setInt(1,1);
         updateStatement.execute();
     }
     

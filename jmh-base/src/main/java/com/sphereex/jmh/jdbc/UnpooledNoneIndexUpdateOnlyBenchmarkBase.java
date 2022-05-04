@@ -31,6 +31,8 @@
 
 package com.sphereex.jmh.jdbc;
 
+import com.sphereex.jmh.config.BenchmarkParameters;
+import com.sphereex.jmh.util.Strings;
 import org.openjdk.jmh.annotations.*;
 
 import java.sql.Connection;
@@ -38,43 +40,31 @@ import java.sql.PreparedStatement;
 import java.util.concurrent.ThreadLocalRandom;
 
 @State(Scope.Thread)
-public abstract class UnpooledDeleteOnlyBenchmarkBase implements JDBCConnectionProvider {
+public abstract class UnpooledNoneIndexUpdateOnlyBenchmarkBase implements JDBCConnectionProvider {
     
+    private PreparedStatement updateStatement;
+
     private final ThreadLocalRandom random = ThreadLocalRandom.current();
     
-    private PreparedStatement deleteStatement;
-    
-    private PreparedStatement insertStatement;
-    
     private Connection connection;
-    
-    private static int TABLE_SIZE = 1_000_000;
     
     @Setup(Level.Trial)
     public void setup() throws Exception {
         connection = getConnection();
-        connection.setAutoCommit(false);
-        deleteStatement = connection.prepareStatement("delete from sbtest1 where id=?;");
-        insertStatement = connection.prepareStatement("insert into sbtest1(id,k, pad) values(?,?, ?);");
+        updateStatement = connection.prepareStatement("update sbtest1 set c=? where id=?;");
     }
     
     @Benchmark
-    //@BenchmarkMode({Mode.Throughput, Mode.AverageTime, Mode.SampleTime})
-    public void oltpDeleteOnly() throws Exception {
-        int id = random.nextInt(TABLE_SIZE);
-        deleteStatement.setInt(1,id);
-        deleteStatement.execute();
-        insertStatement.setInt(1,id);
-        insertStatement.setInt(2,id);
-        insertStatement.setString(3,"test");
-        insertStatement.execute();
-        connection.commit();
+    @BenchmarkMode({Mode.Throughput, Mode.AverageTime, Mode.SampleTime})
+    public void oltpUpdateOnly() throws Exception {
+        updateStatement.setString(1, Strings.randomString(120));
+        updateStatement.setInt(2, random.nextInt(BenchmarkParameters.TABLE_SIZE));
+        updateStatement.execute();
     }
     
     @TearDown(Level.Trial)
     public void tearDown() throws Exception {
-        deleteStatement.close();
-        insertStatement.close();
+        updateStatement.close();
         connection.close();
     }
 }
