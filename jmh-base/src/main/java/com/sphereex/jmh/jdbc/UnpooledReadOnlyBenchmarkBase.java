@@ -61,10 +61,9 @@ public abstract class UnpooledReadOnlyBenchmarkBase implements JDBCConnectionPro
     
     @Benchmark
     public void oltpReadOnly() throws Exception {
-        for (PreparedStatement each : preparedStatements) {
-            each.setInt(1, ThreadLocalRandom.current().nextInt(BenchmarkParameters.TABLE_SIZE));
-            each.execute();
-        }
+        int tableOrder = ThreadLocalRandom.current().nextInt(BenchmarkParameters.TABLES);
+        preparedStatements[tableOrder].setInt(1, ThreadLocalRandom.current().nextInt(BenchmarkParameters.TABLE_SIZE));
+        preparedStatements[tableOrder].execute();
         connection.commit();
     }
     
