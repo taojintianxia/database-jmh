@@ -1,12 +1,12 @@
 package com.sphereex.jmh.shardingsphere5;
 
-import com.sphereex.jmh.jdbc.UnpooledUpdateOnlyBenchmarkBase;
+import com.sphereex.jmh.jdbc.UnpooledIndexUpdateOnlyBenchmarkBase;
 import lombok.SneakyThrows;
 
 import javax.sql.DataSource;
 import java.sql.Connection;
 
-public class ShardingSphereUpdateOnlyBenchmark extends UnpooledUpdateOnlyBenchmarkBase {
+public class ShardingSphereUpdateIndexBenchmark extends UnpooledIndexUpdateOnlyBenchmarkBase {
     
     private static final DataSource DATA_SOURCE;
     
